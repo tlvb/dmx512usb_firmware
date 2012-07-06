@@ -5,11 +5,14 @@
 
 int main(void) {
 	DDRB = 0xe0;
-	uint8_t i = 0;
+	PORTB |= 0x10;
 	for (;;) {
-		PORTB &= 0x1f;
-		PORTB |= ((i++)&7) << 5;
-		_delay_ms(250);
+		if (PINB & _BV(PB4)) {
+			PORTB |= 0xe0;
+		}
+		else {
+			PORTB &= 0x1f;
+		}
 	}
 }
 

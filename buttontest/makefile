@@ -78,7 +78,7 @@ PROGRAMMER_MCU=m164p
 
 # Name of our project
 # (use a single word, e.g. 'myproject')
-PROJECTNAME=ledtest
+PROJECTNAME=buttontest
 
 # Source files
 # List C/C++/Assembly source files:
