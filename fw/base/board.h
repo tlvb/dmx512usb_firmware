@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #define DMXPORT PORTD
+#define DMXPIN PIND
 #define USBPORT PORTD
 
 #define USBRTS PD7	/* i */
