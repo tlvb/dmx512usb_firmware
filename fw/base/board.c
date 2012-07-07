@@ -2,8 +2,8 @@
 #include <util/delay.h>
 
 void pinsetup(void) {
-	DDRD |= _BV(USBCTS)|_BV(DMXREN)|_BV(DMXTEN)|_BV(DMXTX)|_BV(USBTX);
-	PORTD |= _BV(USBCTS);
+	DDRD |= _BV(USBRTS)|_BV(DMXREN)|_BV(DMXTEN)|_BV(DMXTX)|_BV(USBTX);
+	PORTD |= _BV(USBRTS);
 	DDRB |= _BV(LED2)|_BV(LED1)|_BV(LED0);
 	PORTB |= _BV(LED2)|_BV(LED1)|_BV(LED0); /* turn leds off */
 }
