@@ -25,12 +25,8 @@
 
 #define LEDS_ON PORTB &=~ _BV(LED2)|_BV(LED1)|_BV(LED0)
 #define LEDS_OFF PORTB |= _BV(LED2)|_BV(LED1)|_BV(LED0)
-#define LED_ON(2) PORTB &=~ _BV(LED2)
-#define LED_ON(1) PORTB &=~ _BV(LED1)
-#define LED_ON(0) PORTB &=~ _BV(LED0)
-#define LED_OFF(2) PORTB |= _BV(LED2)
-#define LED_OFF(1) PORTB |= _BV(LED1)
-#define LED_OFF(0) PORTB |= _BV(LED0)
+#define LED_ON(x) PORTB &=~ _BV(x)
+#define LED_OFF(x) PORTB |= _BV(x)
 
 void pinsetup(void);
 void ledhello(void);
