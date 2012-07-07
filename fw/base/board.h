@@ -10,8 +10,8 @@
 #define USBPORT PORTD
 #define USBPIN PIND
 
-#define USBRTS PD7	/* i */
-#define USBCTS PD6	/* o */
+#define USBRTS PD7	/* o */
+#define USBCTS PD6	/* i */
 #define DMXREN PD5	/* o */
 #define DMXTEN PD4	/* o */
 #define DMXTX PD3	/* o */
