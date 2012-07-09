@@ -23,8 +23,8 @@
 #define LED1 PB6
 #define LED0 PB5
 
-#define LEDS_ON PORTB &=~ _BV(LED2)|_BV(LED1)|_BV(LED0)
-#define LEDS_OFF PORTB |= _BV(LED2)|_BV(LED1)|_BV(LED0)
+#define LEDS_ON() PORTB &=~ _BV(LED2)|_BV(LED1)|_BV(LED0)
+#define LEDS_OFF() PORTB |= _BV(LED2)|_BV(LED1)|_BV(LED0)
 #define LED_ON(x) PORTB &=~ _BV(x)
 #define LED_OFF(x) PORTB |= _BV(x)
 

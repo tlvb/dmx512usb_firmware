@@ -3,9 +3,9 @@
 
 void pinsetup(void) {
 	DDRD |= _BV(USBRTS)|_BV(DMXREN)|_BV(DMXTEN)|_BV(DMXTX)|_BV(USBTX);
-	PORTD |= _BV(USBRTS);
+	PORTD |= _BV(USBRTS)|_BV(USBTX);
 	DDRB |= _BV(LED2)|_BV(LED1)|_BV(LED0);
-	PORTB |= _BV(LED2)|_BV(LED1)|_BV(LED0); /* turn leds off */
+	LEDS_OFF();
 }
 
 void ledhello(void) {

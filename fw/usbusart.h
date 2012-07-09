@@ -3,8 +3,9 @@
 
 #include <avr/interrupt.h>
 #include <util/atomic.h>
+#include "board.h"
 
-#define TXBSZ 16
+#define TXBSZ 8
 #define RXBSZ 16
 
 #define RINGBUFFER(X) struct {	\
@@ -13,15 +14,15 @@
 			uint8_t length;		\
 		}
 
-#define RINGBUFFER_PUT(b, v, SZ)	{						\
+#define RINGBUFFER_PUT(b, v, SZ) {						\
 			b.data[ (b.start+b.length) & (SZ-1) ] = v;	\
 			++b.length;									\
 		}
 
 #define RINGBUFFER_GET(v, b, SZ) {				\
 			v = b.data[ b.start ];				\
-			b.start = (b.start+1) & (SZ-1);	\
 			--b.length;							\
+			b.start = (b.start+1) & (SZ-1);		\
 		}
 
 void uu_init(void);
