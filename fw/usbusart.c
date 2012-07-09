@@ -16,7 +16,7 @@ void uu_init(void) {
 	UBRR0L = 0;
 	PCICR |= _BV(PCIE3);
 	PCMSK3 |= _BV(PCINT30);
-
+	USBPORT &=~ _BV(USBRTS);
 }
 
 void uu_write(uint8_t *src, uint8_t n) {
@@ -33,10 +33,25 @@ void uu_write(uint8_t *src, uint8_t n) {
 	}
 }
 
-void uu_read(uint8_t *src, uint8_t n) {
+void uu_read(uint8_t *dst, uint8_t n) {
+	while (n > 0) {
+		if (rxb.length > 0) {
+			ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+				RINGBUFFER_GET(*(dst++), rxb, RXBSZ);
+			}
+			--n;
+		}
+		if (rxb.length <= RXBSZ-3) {
+			USBPORT &=~ _BV(USBRTS);
+		}
+	}
 }
 
 ISR(USART0_RX_vect) {
+	RINGBUFFER_PUT(rxb, UDR0, RXBSZ);
+	if (rxb.length > RXBSZ-3) {
+		USBPORT |= _BV(USBRTS);
+	}
 }
 
 ISR(USART0_UDRE_vect) {
@@ -51,10 +66,10 @@ ISR(USART0_UDRE_vect) {
 ISR(PCINT3_vect) {
 	if (((USBPIN & _BV(USBCTS)) == 0) && (txb.length > 0)) {
 		UCSR0A |= _BV(UDRIE0);
-		LED_ON(LED1);
+		LED_OFF(LED2);
 	}
 	else {
-		LED_ON(LED2);
 		UCSR0A &=~ _BV(UDRIE0);
+		LED_ON(LED2);
 	}
 }

@@ -28,7 +28,7 @@
 #define LED_ON(x) PORTB &=~ _BV(x)
 #define LED_OFF(x) PORTB |= _BV(x)
 
-#define BUTTON() ((PORTB & _BV(PB4)) == 0)
+#define BUTTON() ((PINB & _BV(PB4)) == 0)
 
 void pinsetup(void);
 void ledhello(void);

@@ -15,34 +15,16 @@ int main(void) {
 
 	sei();
 
-	uint8_t *text = (uint8_t*) "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	uint8_t text[3];
 
-for (uint16_t i=0; i<0x1000; ++i) {
-
-//	UDR0 = 'X'; //d
-//	_delay_ms(1); //d
-	uu_write(text, 26);
-//	_delay_ms(1); //d
-//	UDR0 = 'x'; //d
-//	_delay_ms(1); //d
-//	for (uint8_t i=0; i<TXBSZ; ++i) { //d
-//		UDR0 = txb.data[i]; //d
-//		_delay_ms(1); //d
-//	} //d
-//	UDR0 = ' '; //d
-//	_delay_ms(1); //d
-//	UDR0 = txb.start; //d
-//	_delay_ms(1); //d
-//	UDR0 = txb.length; //d
-//	_delay_ms(1); //d
-//	UDR0 = '\n'; //d
-//	_delay_ms(1); //d
-}
-	for(;;) {
+	
+	for (;;) {
 		LED_ON(LED0);
-		_delay_ms(500);
+		uu_read(text, 3);
 		LED_OFF(LED0);
-		_delay_ms(500);
+		uu_write(text, 3);
+		_delay_ms(125);
+
 	}
 }
 
