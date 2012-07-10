@@ -1,33 +1,35 @@
 #include "usbusart.h"
 
-volatile RINGBUFFER(TXBSZ) txb;
-volatile RINGBUFFER(RXBSZ) rxb;
+volatile UU_RINGBUFFER(UU_TXBSZ) uu_txb;
+volatile UU_RINGBUFFER(UU_RXBSZ) uu_rxb;
 
-void uu_init(void) {
+void uu_setup(void) {
 	// 1.25Mbd 8N1 @ 20MHz fcpu
 	// interrupts enabled
-	txb.start = 0;
-	txb.length = 0;
-	rxb.start = 0;
-	rxb.length = 0;
+	uu_txb.start = 0;
+	uu_txb.length = 0;
+	uu_rxb.start = 0;
+	uu_rxb.length = 0;
 	UCSR0B |= _BV(RXCIE0) | _BV(RXEN0) | _BV(TXEN0);
 	UCSR0C |= _BV(UCSZ01) | _BV(UCSZ00);
 	UBRR0H = 0;
 	UBRR0L = 0;
 	PCICR |= _BV(PCIE3);
 	PCMSK3 |= _BV(PCINT30);
-	USBPORT &=~ _BV(USBRTS);
+	UU_DDR |= _BV(UU_RTS);
+	UU_DDR &=~ _BV(UU_CTS);
+	uu_set_rts();
 }
 
 void uu_write(uint8_t *src, uint8_t n) {
 	while (n > 0) {
-		if (txb.length < TXBSZ) {
+		if (uu_txb.length < UU_TXBSZ) {
 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {			
-				RINGBUFFER_PUT(txb, *(src++), TXBSZ);
+				UU_RINGBUFFER_PUT(uu_txb, *(src++), UU_TXBSZ);
 			}
 			--n;
 		}
-		if ((txb.length > 0) && ((USBPIN & _BV(USBCTS)) == 0)) {
+		if ((uu_txb.length > 0) && uu_cts()) {
 			UCSR0B |= _BV(UDRIE0);
 		}
 	}
@@ -35,41 +37,39 @@ void uu_write(uint8_t *src, uint8_t n) {
 
 void uu_read(uint8_t *dst, uint8_t n) {
 	while (n > 0) {
-		if (rxb.length > 0) {
+		if (uu_rxb.length > 0) {
 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-				RINGBUFFER_GET(*(dst++), rxb, RXBSZ);
+				UU_RINGBUFFER_GET(*(dst++), uu_rxb, UU_RXBSZ);
 			}
 			--n;
 		}
-		if (rxb.length <= RXBSZ-3) {
-			USBPORT &=~ _BV(USBRTS);
+		if (uu_rxb.length <= UU_RXBSZ-3) {
+			uu_set_rts();
 		}
 	}
 }
 
 ISR(USART0_RX_vect) {
-	RINGBUFFER_PUT(rxb, UDR0, RXBSZ);
-	if (rxb.length > RXBSZ-3) {
-		USBPORT |= _BV(USBRTS);
+	UU_RINGBUFFER_PUT(uu_rxb, UDR0, UU_RXBSZ);
+	if (uu_rxb.length > UU_RXBSZ-3) {
+		uu_reset_rts();
 	}
 }
 
 ISR(USART0_UDRE_vect) {
-	if (((USBPIN & _BV(USBCTS)) == 0) && (txb.length > 0)) {
-		RINGBUFFER_GET(UDR0, txb, TXBSZ);
+	if (uu_cts() && (uu_txb.length > 0)) {
+		UU_RINGBUFFER_GET(UDR0, uu_txb, UU_TXBSZ);
 	}
-	if (txb.length < 1) {
+	if (uu_txb.length < 1) {
 		UCSR0B &=~ _BV(UDRIE0);
 	}
 }
 
 ISR(PCINT3_vect) {
-	if (((USBPIN & _BV(USBCTS)) == 0) && (txb.length > 0)) {
+	if (uu_cts() && (uu_txb.length > 0)) {
 		UCSR0A |= _BV(UDRIE0);
-		LED_OFF(LED2);
 	}
 	else {
 		UCSR0A &=~ _BV(UDRIE0);
-		LED_ON(LED2);
 	}
 }
