@@ -4,7 +4,7 @@ volatile uint8_t dt_state;
 volatile uint8_t dt_txb[DT_TXBSZ];
 volatile uint8_t dt_txbi;
 
-void dmxtx_init(void) {
+void dmxtx_setup(void) {
 		/* 250k 8N2 ...but not yet -- SFB and MAB first */
 		/* usart */
 	UCSR1C |= _BV(USBS1) | _BV(UCSZ11) | _BV(UCSZ10);

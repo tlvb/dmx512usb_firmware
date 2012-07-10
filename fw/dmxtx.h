@@ -18,10 +18,6 @@
 #define DT_SFBT 240
 #define DT_MABT 30
 
-
-
-void dmxtx_init(void);
-
-
+void dmxtx_setup(void);
 
 #endif
