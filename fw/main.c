@@ -1,7 +1,7 @@
 #include "board.h"
 
 int main(void) {
-	pinsetup();
-	ledhello();
+	dmxtx_setup();
+	/* TODO: stuff */
 	for(;;);
 }
