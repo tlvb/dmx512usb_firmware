@@ -1,9 +1,8 @@
 #include "dmxtx.h"
 
-volatile uint8_t dmxtxstate;
-volatile uint8_t dmxtxb[DMXTXBSZ];
-volatile uint8_t dmxtxbi;
-
+volatile uint8_t dt_state;
+volatile uint8_t dt_txb[DT_TXBSZ];
+volatile uint8_t dt_txbi;
 
 void dmxtx_init(void) {
 		/* 250k 8N2 ...but not yet -- SFB and MAB first */
@@ -11,20 +10,21 @@ void dmxtx_init(void) {
 	UCSR1C |= _BV(USBS1) | _BV(UCSZ11) | _BV(UCSZ10);
 	UBRR1H = 0; UBRR1L = 4;
 		/* SFB */
-	DMXPORT &=~ _BV(DMXTX);
+	DT_DDR |= _BV(DT_TXEN) | _BV(DT_TX);
+	DT_PORT &=~ _BV(DT_TX);
 		/* timer */
 	TIMSK0 |= _BV(OCIE0A);
-	OCR0A = DMXTXSFBT;
+	OCR0A = DT_SFBT;
 	TCNT0 = 0;
 	TCCR0B |= _BV(CS01);
-	dmxtxstate = DMXTXSFBS;
-	dmxtxbi = 0;
+	dt_state = DT_SFBS;
+	dt_txbi = 0;
 }
 
 ISR(USART1_UDRE_vect) {
 		/* transmit */
-	UDR1 = dmxtxb[dmxtxbi++];
-	if (dmxtxbi == DMXTXBSZ) {
+	UDR1 = dt_txb[dt_txbi++];
+	if (dt_txbi == DT_TXBSZ) {
 			/* prepare for SFB if last */
 		UCSR1B &=~ _BV(UDRIE1);
 		UCSR1B |= _BV(TXCIE1);
@@ -34,26 +34,26 @@ ISR(USART1_UDRE_vect) {
 ISR(USART1_TX_vect) {
 		/* stop transmission, generate SFB */
 	UCSR1B &=~ _BV(TXCIE1) | _BV(TXEN1);
-	DMXPORT &=~ _BV(DMXTX);
-	OCR0A = DMXTXSFBT;
+	DT_PORT &=~ _BV(DT_TX);
+	OCR0A = DT_SFBT;
 	TCNT0 = 0;
 	TCCR0B |= _BV(CS01);
-	dmxtxstate = DMXTXSFBS;
-	dmxtxbi = 0;
+	dt_state = DT_SFBS;
+	dt_txbi = 0;
 }
 
 ISR(TIMER0_COMPA_vect) {
-	if (dmxtxstate == DMXTXSFBS) {
+	if (dt_state == DT_SFBS) {
 			/* SFB complete, generate MAB */
-		OCR0A = DMXTXMABT;
-		DMXPORT |= _BV(DMXTX);
-		dmxtxstate = DMXTXMABS;
+		OCR0A = DT_MABT;
+		DT_PORT |= _BV(DT_TX);
+		dt_state = DT_MABS;
 	}
-	else if (dmxtxstate == DMXTXMABS) {
+	else if (dt_state == DT_MABS) {
 			/* MAB complete, stop timer, start transmission */
 		TCCR0B &=~ _BV(CS02) | _BV(CS01) | _BV(CS00);
 		UCSR1B |= _BV(UDRIE1) | _BV(TXEN1);
 		UDR1 = 0;
-		dmxtxstate = DMXTXTXS;
+		dt_state = DT_TXS;
 	}
 }

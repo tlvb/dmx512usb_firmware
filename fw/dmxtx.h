@@ -1,17 +1,22 @@
 #ifndef __DMXTX_H__
 #define __DMXTX_H__
 
-#include "board.h"
+#include <avr/io.h>
 #include <avr/interrupt.h>
 
+#define DT_DDR DDRD
+#define DT_PORT PORTD
 
-#define DMXTXSFBS 0
-#define DMXTXMABS 1
-#define DMXTXTXS 2
+#define DT_TXEN PD4	/* o */
+#define DT_TX PD3	/* o */
 
-#define DMXTXBSZ 64
-#define DMXTXSFBT 240
-#define DMXTXMABT 30
+#define DT_SFBS 0
+#define DT_MABS 1
+#define DT_TXS 2
+
+#define DT_TXBSZ 64
+#define DT_SFBT 240
+#define DT_MABT 30
 
 
 
