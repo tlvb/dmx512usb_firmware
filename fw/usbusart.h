@@ -38,7 +38,7 @@
 #define uu_set_rts() UU_PORT &=~ _BV(UU_RTS)
 #define uu_reset_rts() UU_PORT |= _BV(UU_RTS)
 
-void uu_init(void);
+void uu_setup(void);
 void uu_write(uint8_t *src, uint8_t n);
 void uu_read(uint8_t *dst, uint8_t n);
 
