@@ -8,7 +8,8 @@ void dmxtx_setup(void) {
 		/* 250k 8N2 ...but not yet -- SFB and MAB first */
 		/* usart */
 	UCSR1C |= _BV(USBS1) | _BV(UCSZ11) | _BV(UCSZ10);
-	UBRR1H = 0; UBRR1L = 4;
+	UBRR1H = DT_BAUDH;
+	UBRR1L = DT_BAUDL;
 		/* SFB */
 	DT_DDR |= _BV(DT_TXEN) | _BV(DT_TX);
 	DT_PORT &= ~_BV(DT_TX);
@@ -16,7 +17,7 @@ void dmxtx_setup(void) {
 	TIMSK0 |= _BV(OCIE0A);
 	OCR0A = DT_SFBT;
 	TCNT0 = 0;
-	TCCR0B |= _BV(CS01);
+	TCCR0B |= DT_PRESC;
 	dt_state = DT_SFBS;
 	dt_txbi = 0;
 }
@@ -37,7 +38,7 @@ ISR(USART1_TX_vect) {
 	DT_PORT &= ~_BV(DT_TX);
 	OCR0A = DT_SFBT;
 	TCNT0 = 0;
-	TCCR0B |= _BV(CS01);
+	TCCR0B |= DT_PRESC;
 	dt_state = DT_SFBS;
 	dt_txbi = 0;
 }
