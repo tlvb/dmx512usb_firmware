@@ -10,6 +10,6 @@
 
 #define button() ((BUTTONPIN & _BV(BUTTON)) == 0)
 
-inline void button_setup(void);
+void button_setup(void);
 
 #endif
