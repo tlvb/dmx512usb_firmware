@@ -19,3 +19,5 @@
 inline void led_setup(void);
 void led_hello(void);
 void led_error(void);
+
+#endif
