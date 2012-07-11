@@ -10,6 +10,10 @@
 #define DT_TXEN PD4	/* o */
 #define DT_TX PD3	/* o */
 
+#define DT_BAUDH 0
+#define DT_BAUDL 4
+#define DT_PRESC _BV(CS01)
+
 #define DT_SFBS 0
 #define DT_MABS 1
 #define DT_TXS 2
