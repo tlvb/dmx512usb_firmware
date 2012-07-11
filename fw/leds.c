@@ -1,6 +1,6 @@
 #include "leds.h"
 
-inline void led_setup(void) {
+void led_setup(void) {
 	LEDDDR |= _BV(LED2) | _BV(LED1) | _BV(LED0);
 	leds_off();
 }

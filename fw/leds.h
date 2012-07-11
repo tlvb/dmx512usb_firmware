@@ -16,7 +16,7 @@
 #define led_on(x) LEDPORT &=~ _BV(x)
 #define led_off(x) LEDPORT |= _BV(x)
 
-inline void led_setup(void);
+void led_setup(void);
 void led_hello(void);
 void led_error(void);
 
