@@ -11,7 +11,7 @@
 #define LED1 PB6
 #define LED0 PB5
 
-#define leds_on() LEDPORT &=~ _BV(LED2)|_BV(LED1)|_BV(LED0)
+#define leds_on() LEDPORT &= ~(_BV(LED2)|_BV(LED1)|_BV(LED0))
 #define leds_off() LEDPORT |= _BV(LED2)|_BV(LED1)|_BV(LED0)
 #define led_on(x) LEDPORT &=~ _BV(x)
 #define led_off(x) LEDPORT |= _BV(x)
