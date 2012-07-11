@@ -35,7 +35,7 @@
 		}
 
 #define uu_cts() ((UU_PIN & _BV(UU_CTS)) == 0)
-#define uu_set_rts() UU_PORT &=~ _BV(UU_RTS)
+#define uu_set_rts() UU_PORT &= ~_BV(UU_RTS)
 #define uu_reset_rts() UU_PORT |= _BV(UU_RTS)
 
 void uu_setup(void);

@@ -17,7 +17,7 @@ void uu_setup(void) {
 	PCICR |= _BV(PCIE3);
 	PCMSK3 |= _BV(PCINT30);
 	UU_DDR |= _BV(UU_RTS);
-	UU_DDR &=~ _BV(UU_CTS);
+	UU_DDR &= ~_BV(UU_CTS);
 	uu_set_rts();
 }
 
@@ -61,7 +61,7 @@ ISR(USART0_UDRE_vect) {
 		UU_RINGBUFFER_GET(UDR0, uu_txb, UU_TXBSZ);
 	}
 	if (uu_txb.length < 1) {
-		UCSR0B &=~ _BV(UDRIE0);
+		UCSR0B &= ~_BV(UDRIE0);
 	}
 }
 
@@ -70,6 +70,6 @@ ISR(PCINT3_vect) {
 		UCSR0A |= _BV(UDRIE0);
 	}
 	else {
-		UCSR0A &=~ _BV(UDRIE0);
+		UCSR0A &= ~_BV(UDRIE0);
 	}
 }
