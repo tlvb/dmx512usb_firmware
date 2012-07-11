@@ -78,14 +78,14 @@ PROGRAMMER_MCU=m164p
 
 # Name of our project
 # (use a single word, e.g. 'myproject')
-PROJECTNAME=test
+PROJECTNAME=dmxtx_test
 
 # Source files
 # List C/C++/Assembly source files:
 # (list all files to compile, e.g. 'a.c b.cpp as.S'):
 # Use .cc, .cpp or .C suffix for C++ files, use .S 
 # (NOT .s !!!) for assembly source code files.
-PRJSRC=main.c dmxtx.c
+PRJSRC=main.c dmxtx.c leds.c
 
 # additional includes (e.g. -I/path/to/mydir)
 INC=

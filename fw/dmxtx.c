@@ -11,7 +11,7 @@ void dmxtx_setup(void) {
 	UBRR1H = 0; UBRR1L = 4;
 		/* SFB */
 	DT_DDR |= _BV(DT_TXEN) | _BV(DT_TX);
-	DT_PORT &=~ _BV(DT_TX);
+	DT_PORT &= ~_BV(DT_TX);
 		/* timer */
 	TIMSK0 |= _BV(OCIE0A);
 	OCR0A = DT_SFBT;
@@ -26,15 +26,15 @@ ISR(USART1_UDRE_vect) {
 	UDR1 = dt_txb[dt_txbi++];
 	if (dt_txbi == DT_TXBSZ) {
 			/* prepare for SFB if last */
-		UCSR1B &=~ _BV(UDRIE1);
+		UCSR1B &= ~_BV(UDRIE1);
 		UCSR1B |= _BV(TXCIE1);
 	}
 }
 
 ISR(USART1_TX_vect) {
 		/* stop transmission, generate SFB */
-	UCSR1B &=~ _BV(TXCIE1) | _BV(TXEN1);
-	DT_PORT &=~ _BV(DT_TX);
+	UCSR1B &= ~(_BV(TXCIE1) | _BV(TXEN1));
+	DT_PORT &= ~_BV(DT_TX);
 	OCR0A = DT_SFBT;
 	TCNT0 = 0;
 	TCCR0B |= _BV(CS01);
@@ -51,7 +51,7 @@ ISR(TIMER0_COMPA_vect) {
 	}
 	else if (dt_state == DT_MABS) {
 			/* MAB complete, stop timer, start transmission */
-		TCCR0B &=~ _BV(CS02) | _BV(CS01) | _BV(CS00);
+		TCCR0B &= ~(_BV(CS02) | _BV(CS01) | _BV(CS00));
 		UCSR1B |= _BV(UDRIE1) | _BV(TXEN1);
 		UDR1 = 0;
 		dt_state = DT_TXS;
