@@ -85,10 +85,10 @@ PROJECTNAME=test
 # (list all files to compile, e.g. 'a.c b.cpp as.S'):
 # Use .cc, .cpp or .C suffix for C++ files, use .S 
 # (NOT .s !!!) for assembly source code files.
-PRJSRC=main.c base/board.c
+PRJSRC=main.c
 
 # additional includes (e.g. -I/path/to/mydir)
-INC=-Ibase/
+INC=
 
 # libraries to link in (e.g. -lmylib)
 LIBS=
