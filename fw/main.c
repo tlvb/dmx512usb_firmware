@@ -1,5 +1,6 @@
 #include <avr/io.h>
-#include <stdint.h>
+#include <leds.h>
+#include <button.h>
 
 #define DMXDDR DDRD
 #define DMXPORT PORTD
@@ -12,10 +13,9 @@
 
 int main(void) {
 	
-	DDRB |= _BV(PB7) | _BV(PB6);
-	DDRB &= _BV(PB4);
-	PORTB &= ~_BV(PB7);
-	PORTB |= _BV(PB4);
+	led_setup();
+	button_setup();
+	led_hello();
 
 		/* enable reception, */
 		/* disable transmission */
@@ -28,9 +28,9 @@ int main(void) {
 	UBRR0H = 0;
 	UBRR0L = 0;
 	
-	while ((PINB & _BV(PB4)) != 0);
+	while (!button());
 
-	PORTB |= _BV(PB7);
+	led_hello();
 
 	asm volatile(
 			"															\
