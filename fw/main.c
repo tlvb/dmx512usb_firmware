@@ -44,10 +44,10 @@ int main(void) {
 			push	r16												\n\t\
 			push	r17												\n\t\
 			push	r18												\n\t\
-			ldi		r18,		8			; 1						\n\t\
-			ldi		r17,		0			; 1						\n\t\
+			ldi		r18,		8									\n\t\
+			ldi		r17,		0									\n\t\
 																		\
-start_%=:	in		r16,		%[pind]		; 1			1			\n\t\
+start_%=:	in		r16,		%[dmxpin]	; 1			1			\n\t\
 			bst		r16,		2			; 1			2			\n\t\
 			bld		r17,		0			; 1			3			\n\t\
 			dec		r18						; 1			4			\n\t\
@@ -63,17 +63,43 @@ nosend_%=:	lsl		r17						; 1			7			\n\t\
 			nop								; 1			10			\n\t\
 																		\
 again_%=:	nop								; 1			11			\n\t\
-			nop								; 1n		12			\n\t\
-			nop								; 1n		13			\n\t\
-			nop								; 1n		14			\n\t\
-			rjmp	start_%=				; 2			16			\n\t\
+			ldi		r19,		0x00		; 1			12			\n\t\
+			bld		r19,		%[led0]		; 1			14			\n\t\
+			com		r19						; 1			15			\n\t\
+			out		%[ledport],	r19			; 1			16			\n\t\
+			nop								; 1			17			\n\t\
+			nop								; 1			18			\n\t\
+			nop								; 1			19			\n\t\
+			nop								; 1			20			\n\t\
+			nop								; 1			21			\n\t\
+			nop								; 1			22			\n\t\
+			nop								; 1			23			\n\t\
+			nop								; 1			24			\n\t\
+			nop								; 1			25			\n\t\
+			nop								; 1			26			\n\t\
+			nop								; 1			27			\n\t\
+			nop								; 1			28			\n\t\
+			nop								; 1			29			\n\t\
+			nop								; 1			30			\n\t\
+			nop								; 1			31			\n\t\
+			nop								; 1			32			\n\t\
+			nop								; 1			33			\n\t\
+			nop								; 1			34			\n\t\
+			nop								; 1			35			\n\t\
+			nop								; 1			36			\n\t\
+			nop								; 1			37			\n\t\
+			nop								; 1			38			\n\t\
+			rjmp	start_%=				; 2			40			\n\t\
 																		\
 			pop		r18												\n\t\
 			pop		r17												\n\t\
 			pop		r16												\n\t\
 			"
 			:
-			: [pind] "I" (_SFR_IO_ADDR(PIND)), [udr0] "" (UDR0)
+			:	[dmxpin] "I" (_SFR_IO_ADDR(DMXPIN)),
+				[udr0] "" (UDR0),
+				[led0] "I" (LED0),
+				[ledport] "I" (_SFR_IO_ADDR(LEDPORT))
 	);
 
 	for(;;);
