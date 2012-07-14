@@ -1,4 +1,5 @@
 #include "dmxtx.h"
+#include "leds.h"
 
 volatile uint8_t dt_state;
 volatile uint8_t dt_txb[DT_TXBSZ];
@@ -12,6 +13,7 @@ void dmxtx_setup(void) {
 	UBRR1L = DT_BAUDL;
 		/* SFB */
 	DT_DDR |= _BV(DT_TXEN) | _BV(DT_TX);
+	DT_PORT |= _BV(DT_TXEN);
 	DT_PORT &= ~_BV(DT_TX);
 		/* timer */
 	TIMSK0 |= _BV(OCIE0A);
@@ -49,6 +51,7 @@ ISR(TIMER0_COMPA_vect) {
 		OCR0A = DT_MABT;
 		DT_PORT |= _BV(DT_TX);
 		dt_state = DT_MABS;
+		led_on(LED2);
 	}
 	else if (dt_state == DT_MABS) {
 			/* MAB complete, stop timer, start transmission */

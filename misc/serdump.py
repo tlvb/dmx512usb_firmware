@@ -7,7 +7,8 @@ import time;
 s = serial.Serial('/dev/ttyUSB0', 1250000, rtscts=True)
 h = 44
 while True:
-	raw = s.read();
+	raw = s.read(s.inWaiting())
+	s.write("x")
 	for c in raw:
 		o = ord(c);
 		if o >= 32 and o < 127:
