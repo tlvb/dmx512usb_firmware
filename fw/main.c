@@ -17,9 +17,10 @@ int main(void) {
 	button_setup();
 	led_hello();
 
-		/* enable reception, */
-		/* disable transmission */
+		/* enable reception, REN is active low*/
+		/* disable transmission, TEN is active high */
 	DMXDDR |= _BV(DMXREN) | _BV(DMXTEN);
+	DMXDDR &= ~_BV(DMXRX);
 	DMXPORT &= ~(_BV(DMXREN) | _BV(DMXTEN));
 
 		/* 1.25Mbd 8N1 */
@@ -32,43 +33,47 @@ int main(void) {
 
 	led_hello();
 
+	/*	r16 -	samples portd 
+		r17 -	keeps the sampled data bits
+		r18	-	counts down until 8 bits have been sampled
+				and it is time to send
+	*/
+
 	asm volatile(
 			"															\
 			push	r16												\n\t\
 			push	r17												\n\t\
 			push	r18												\n\t\
-			ldi		r18,		8			; 1l		10l			\n\t\
-			ldi		r17,		0			; 1l		11l			\n\t\
+			ldi		r18,		8			; 1						\n\t\
+			ldi		r17,		0			; 1						\n\t\
 																		\
-loop_start:	in		r16,		%0			; 1			1			\n\t\
-			lsr		r16						; 1			2			\n\t\
-			lsr		r16						; 1			3			\n\t\
-			andi	r16,		1			; 1			4			\n\t\
-			or		r17,		r16			; 1			5			\n\t\
-			dec		r18						; 1			6			\n\t\
-			brne	not_last				; 1l/2n		7l/8n		\n\t\
+start_%=:	in		r16,		%[pind]		; 1			1			\n\t\
+			bst		r16,		2			; 1			2			\n\t\
+			bld		r17,		0			; 1			3			\n\t\
+			dec		r18						; 1			4			\n\t\
+			brne	nosend_%=				; 1/2		5/6			\n\t\
 																		\
-last:		sts		%1,			r17			; 2l		9l			\n\t\
-			ldi		r18,		8			; 1l		10l			\n\t\
-			ldi		r17,		0			; 1l		11l			\n\t\
-			rjmp	loop_end				; 2l		13l			\n\t\
+send_%=:	sts		%[udr0],	r17			; 2			7			\n\t\
+			ldi		r18,		8			; 1			8			\n\t\
+			rjmp	again_%=				; 2			10			\n\t\
 																		\
-not_last:	lsl		r17						; 1l		9n			\n\t\
-			nop								; 1l		10n			\n\t\
-			nop								; 1l		11n			\n\t\
-			nop								; 1l		12n			\n\t\
-			nop								; 1l		13n			\n\t\
+nosend_%=:	lsl		r17						; 1			7			\n\t\
+			nop								; 1			8			\n\t\
+			nop								; 1			9			\n\t\
+			nop								; 1			10			\n\t\
 																		\
-loop_end:	nop								; 1			14			\n\t\
-			rjmp	loop_start				; 2			16			\n\t\
+again_%=:	nop								; 1			11			\n\t\
+			nop								; 1n		12			\n\t\
+			nop								; 1n		13			\n\t\
+			nop								; 1n		14			\n\t\
+			rjmp	start_%=				; 2			16			\n\t\
 																		\
 			pop		r18												\n\t\
 			pop		r17												\n\t\
 			pop		r16												\n\t\
 			"
 			:
-			: "I" (_SFR_IO_ADDR(PIND)),
-				"" (UDR0)
+			: [pind] "I" (_SFR_IO_ADDR(PIND)), [udr0] "" (UDR0)
 	);
 
 	for(;;);
