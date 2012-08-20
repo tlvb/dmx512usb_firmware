@@ -11,13 +11,33 @@ int main(void) {
 	uu_setup();
 	sei();
 
-	uint8_t text[3];
-	
+
+	uint8_t init = 1;
+	uint8_t cv[2];
+
+	led_hello();
+
 	for (;;) {
-		led_on(LED0);
-		uu_read(text, 3);
-		led_off(LED1);
-		uu_write(text, 3);
-		_delay_ms(125);
+		uu_read(cv, 2);
+
+		if (init != 0 || cv[0] >= 32) {
+			for (uint8_t i=0; i<100; ++i) {
+				uu_read(cv, 1);
+				if (cv[0] != 0xaa)
+					i = 0;
+			}
+			while (cv[0] != 0x55)
+				uu_read(cv, 1);
+			init = 0;
+		}
+		else {
+			leds_off();
+			if (cv[1]>63)
+				led_on(LED0);
+			if (cv[1]>127)
+				led_on(LED1);
+			if (cv[1]>191)
+				led_on(LED2);
+		}
 	}
 }
