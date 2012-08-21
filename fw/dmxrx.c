@@ -1,4 +1,5 @@
 #include "dmxrx.h"
+#include "leds.h"
 
 volatile uint8_t dr_state;
 volatile uint8_t dr_rxb[DR_RXBSZ];
@@ -35,13 +36,15 @@ ISR(USART1_RX_vect) {
 	}
 	else if (dr_state == DR_START) {
 		/* ignore packet if start code != zero */
-		if (byte == 0)
+		if (byte == 0) {
 			dr_state = 0;
-		else
+		}
+		else {
 			dr_state = DR_IGNORE;
+		}
 	}
 	else if (dr_state < DR_RXBSZ) {
-		if (dr_ucb != 0) {
+		if (dr_ucb != 0 && byte != dr_rxb[dr_state]) {
 			(*dr_ucb)(dr_state, byte);
 		}
 		dr_rxb[dr_state++] = byte;
@@ -50,10 +53,4 @@ ISR(USART1_RX_vect) {
 		dr_state = DR_IGNORE;
 	}
 }
-
-
-
-
-
-
 
