@@ -1,21 +1,17 @@
 #include "dmxtx.h"
 #include "leds.h"
-/*
-#include "button.h"
 #include "usbusart.h"
-*/
 #include <avr/io.h>
 
-extern volatile uint8_t dt_state;
 extern volatile uint8_t dt_txb[DT_TXBSZ];
-/*
-#define h2x(h) ((((h)>>4)>9)?('a'+((h)>>4)-10):('0'+((h)>>4)))
-#define l2x(l) ((((l)&7)>9)?('a'+((l)&7)-10):('0'+((l)&7)))
-*/
+
 int main(void) {
-	/* button_setup(); */
 	led_setup();
 	led_hello();
+	uu_setup();
+
+	uint8_t init = 1;
+	uint8_t cv[2];
 
 	for (uint8_t i=0; i<DT_TXBSZ; ++i) {
 		dt_txb[i] = i;
@@ -24,5 +20,25 @@ int main(void) {
 	dmxtx_setup();
 	sei();
 
-	for (;;);
+	for (;;) {
+		uu_read(cv, 2);
+
+		if (init != 0 || cv[0] >= DT_TXBSZ) {
+			led_on(LED0);
+			led_off(LED1);
+			for (uint8_t i=0; i<100; ++i) {
+				uu_read(cv, 1);
+				if (cv[0] != 0xaa)
+					i = 0;
+			}
+			while (cv[0] != 0x55)
+				uu_read(cv, 1);
+			init = 0;
+		}
+		else {
+			led_off(LED0);
+			led_on(LED1);
+			dt_txb[cv[0]] = cv[1];
+		}
+	}
 }
