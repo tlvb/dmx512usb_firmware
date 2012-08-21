@@ -12,7 +12,7 @@
 #define DR_IGNORE 254
 #define DR_START 255
 
-void dmxrx_setup(void);
-void dmxrx_register_update_callback(void (*ucb)(uint8_t, uint8_t));
+void dr_setup(void);
+void dr_register_update_callback(void (*ucb)(uint8_t, uint8_t));
 
 #endif

@@ -4,7 +4,7 @@ volatile uint8_t dr_state;
 volatile uint8_t dr_rxb[DR_RXBSZ];
 void (*dr_ucb)(uint8_t, uint8_t);
 
-void dmxrx_setup(void) {
+void dr_setup(void) {
 	/* 250k 8N2 */
 	/* interrupt on complete reception */
 
@@ -15,7 +15,7 @@ void dmxrx_setup(void) {
 
 }
 
-void dmxrx_register_update_callback(void (*ucb)(uint8_t, uint8_t)) {
+void dr_register_update_callback(void (*ucb)(uint8_t, uint8_t)) {
 	dr_ucb = ucb;
 }
 
