@@ -12,6 +12,9 @@ void dr_setup(void) {
 	DR_DDR |= _BV(DR_RXEN_);
 	DR_PORT &= ~_BV(DR_RXEN_);
 
+	UBRR1H = DR_UBRRH;
+	UBRR1L = DR_UBRRL;
+
 	UCSR1B |= _BV(RXCIE1) | _BV(RXEN1);
 	UCSR1C |= _BV(USBS1) | _BV(UCSZ11) | _BV(UCSZ10);
 	dr_state = 255;
