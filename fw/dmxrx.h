@@ -1,6 +1,9 @@
 #ifndef __DMXRX_H__
 #define __DMXRX_H__
 
+#include <avr/io.h>
+#include <util/interrupt.h>
+
 
 #define DR_UBRRH 0
 #define DR_UBRRL 4
