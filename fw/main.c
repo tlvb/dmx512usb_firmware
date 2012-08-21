@@ -17,8 +17,13 @@ int main(void) {
 	dr_register_update_callback(&update);
 
 	led_hello();
+				//	 123456789abcdef012
+	uint8_t msg[] = "receiver firmware\n";
+
 
 	sei();
+
+	uu_write(msg, 0x12);
 
 	for(;;);
 
