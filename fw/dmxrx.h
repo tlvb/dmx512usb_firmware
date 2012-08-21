@@ -4,6 +4,10 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#define DR_DDR DDRD
+#define DR_PORT PORTD
+#define DR_RX PD2
+#define DR_RXEN_ PD5
 
 #define DR_UBRRH 0
 #define DR_UBRRL 4

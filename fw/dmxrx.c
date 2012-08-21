@@ -8,6 +8,10 @@ void dr_setup(void) {
 	/* 250k 8N2 */
 	/* interrupt on complete reception */
 
+	DR_DDR &= ~_BV(DR_RX);
+	DR_DDR |= _BV(DR_RXEN_);
+	DR_PORT &= ~_BV(DR_RXEN_);
+
 	UCSR1B |= _BV(RXCIE1) | _BV(RXEN1);
 	UCSR1C |= _BV(USBS1) | _BV(UCSZ11) | _BV(UCSZ10);
 	dr_state = 255;
