@@ -1,8 +1,10 @@
+#define __DMXTX_C__
 #include "dmxtx.h"
 
 volatile uint8_t dt_state;
 volatile uint8_t dt_txb[DT_TXBSZ];
 volatile uint8_t dt_txbi;
+volatile uint8_t dt_heartbeat;
 
 void dmxtx_setup(void) {
 		/* 250k 8N2 ...but not yet -- SFB and MAB first */
@@ -55,6 +57,7 @@ ISR(TIMER0_COMPA_vect) {
 		TCCR0B &= ~(_BV(CS02) | _BV(CS01) | _BV(CS00));
 		UCSR1B |= _BV(UDRIE1) | _BV(TXEN1);
 		UDR1 = 0;
+		dt_heartbeat = 1;
 		dt_state = DT_TXS;
 	}
 }
