@@ -22,6 +22,10 @@
 #define DT_SFBT 240
 #define DT_MABT 30
 
+#ifndef __DMXTX_C__
+extern volatile uint8_t dt_heartbeat;
+#endif
+
 void dmxtx_setup(void);
 
 #endif
