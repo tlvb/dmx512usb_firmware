@@ -16,6 +16,10 @@
 #define DR_IGNORE 254
 #define DR_START 255
 
+#ifndef __DMXRX_C__
+extern volatile uint8_t dr_heartbeat;
+#endif
+
 void dr_setup(void);
 void dr_register_update_callback(void (*ucb)(uint8_t, uint8_t));
 
