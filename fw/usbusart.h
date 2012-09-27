@@ -17,6 +17,9 @@
 #define UU_TXBSZ 8
 #define UU_RXBSZ 16
 
+#define UU_UBRRH 0
+#define UU_UBRRL 0
+
 #define UU_RINGBUFFER(X) struct {	\
 			uint8_t data[X];		\
 			uint8_t start;			\

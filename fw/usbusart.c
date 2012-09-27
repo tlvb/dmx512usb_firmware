@@ -12,8 +12,8 @@ void uu_setup(void) {
 	uu_rxb.length = 0;
 	UCSR0B |= _BV(RXCIE0) | _BV(RXEN0) | _BV(TXEN0);
 	UCSR0C |= _BV(UCSZ01) | _BV(UCSZ00);
-	UBRR0H = 0;
-	UBRR0L = 0;
+	UBRR0H = UU_UBRRH;
+	UBRR0L = UU_UBRRL;
 	PCICR |= _BV(PCIE3);
 	PCMSK3 |= _BV(PCINT30);
 	UU_DDR |= _BV(UU_RTS);
