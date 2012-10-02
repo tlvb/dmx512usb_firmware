@@ -4,7 +4,7 @@ volatile UU_RINGBUFFER(UU_TXBSZ) uu_txb;
 volatile UU_RINGBUFFER(UU_RXBSZ) uu_rxb;
 
 void uu_setup(void) {
-	// 1.25Mbd 8N1 @ 20MHz fcpu
+	// 250kbd 8N1 @ 20MHz fcpu
 	// interrupts enabled
 	uu_txb.start = 0;
 	uu_txb.length = 0;

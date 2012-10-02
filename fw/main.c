@@ -24,8 +24,7 @@ int main(void) {
 		uu_read(cv, 2);
 
 		if (init != 0 || cv[0] >= DT_TXBSZ) {
-			led_on(LED0);
-			led_off(LED1);
+			led_error();
 			for (uint8_t i=0; i<100; ++i) {
 				uu_read(cv, 1);
 				if (cv[0] != 0xaa)
@@ -39,6 +38,7 @@ int main(void) {
 			led_off(LED0);
 			led_on(LED1);
 			dt_txb[cv[0]] = cv[1];
+			uu_write(cv, 2);
 		}
 	}
 }
