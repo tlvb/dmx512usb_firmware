@@ -1,0 +1,30 @@
+computer<->card connection details:
+
+standard ft232 usb serial port
+
+1.25 MBaud
+8 databits
+odd parity
+1 stop bit
+
+protocol is channel+value pairs spread over triple byte clusters
+
+00CC CCCC   01-C CCVV   11VV VVVV
+
+00, 01, 11:  two bit headers identifying the byte in the sequence
+C         :  channel data, 0...511 for DMX channels 1...512
+V         :  value data 0...255
+-         :  don't care
+
+channel = ((inp[0]&0x3F)<<3) | ((inp[1]&0x1C)>>2);
+value = ((inp[1]&0x03)<<6) | (inp[2]&0x3F);
+
+The higher transfer speed in the computer<->card interface
+is enough to mitigate that more data is sent for each update,
+compared to DMX512, even for the worst case scenario, that is,
+updating everything, all the time.
+
+Ignoring mark after break and similar things:
+
+DMX512, 1 channel:       10 bits @ 250kBd = 40us
+USB transfer, 1 channel: 3*10 bits @ 1.25MBd = 24us

@@ -18,13 +18,11 @@
 #define DT_MABS 1
 #define DT_TXS 2
 
-#define DT_TXBSZ 64
+#define DT_TXBSZ 512
+#define DT_TXBI_T uint16_t
+
 #define DT_SFBT 240
 #define DT_MABT 30
-
-#ifndef __DMXTX_C__
-extern volatile uint8_t dt_heartbeat;
-#endif
 
 void dmxtx_setup(void);
 

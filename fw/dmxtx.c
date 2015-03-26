@@ -4,7 +4,7 @@
 
 volatile uint8_t dt_state;
 volatile uint8_t dt_txb[DT_TXBSZ];
-volatile uint8_t dt_txbi;
+volatile DT_TXBI_T dt_txbi;
 volatile uint8_t dt_heartbeat;
 
 void dmxtx_setup(void) {
@@ -53,14 +53,13 @@ ISR(TIMER0_COMPA_vect) {
 		OCR0A = DT_MABT;
 		DT_PORT |= _BV(DT_TX);
 		dt_state = DT_MABS;
-		led_on(LED2);
 	}
 	else if (dt_state == DT_MABS) {
+		led_toggle(LED1);
 			/* MAB complete, stop timer, start transmission */
 		TCCR0B &= ~(_BV(CS02) | _BV(CS01) | _BV(CS00));
 		UCSR1B |= _BV(UDRIE1) | _BV(TXEN1);
 		UDR1 = 0;
-		dt_heartbeat = 1;
 		dt_state = DT_TXS;
 	}
 }
